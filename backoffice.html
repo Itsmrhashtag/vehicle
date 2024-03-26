@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create BackOffice Transaction</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px; /* Add padding to provide space around the form */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top of the container */
+    min-height: 100vh; /* Use min-height instead of height for responsiveness */
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px; /* Increase max-width for larger screens */
+    width: 100%; /* Ensure the container takes the full width */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+<div class="container">
+    <h2>Create BackOffice Transaction</h2>
+    <div id="responseMessage"></div>
+    <div class="form-group">
+        <label for="vehicleNumber">Vehicle Number:</label>
+        <select id="vehicleNumber" name="vehicleNumber">
+            <option value="">Select Vehicle Number</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="advanceFreight">Advance Freight:</label>
+        <input type="number" id="advanceFreight" name="advanceFreight" placeholder="Enter advance freight">
+    </div>
+    <div class="form-group">
+        <label for="transporterName">Transporter Name:</label>
+        <input type="text" id="transporterName" name="transporterName" placeholder="Enter transporter name">
+    </div>
+    <div class="form-group">
+        <label for="weight5kg">Weight 5kg:</label>
+        <input type="number" id="weight5kg" name="weight5kg" placeholder="Enter weight 5 Kg">
+    </div>
+    
+    <div class="form-group">
+        <label for="weight3kg">Weight 3kg:</label>
+        <input type="number" id="weight3kg" name="weight3kg" placeholder="Enter weight 3 Kg">
+    </div>
+    <div class="form-group">
+        <label for="weight1kg">Weight 1kg:</label>
+        <input type="number" id="weight1kg" name="weight1kg" placeholder="Enter weight 1 Kg">
+    </div>
+    <div class="form-group">
+        <label for="weight500g">Weight 500g:</label>
+        <input type="number" id="weight500g" name="weight500g" placeholder="Enter weight 500 g">
+    </div>
+    <div class="form-group">
+        <label for="weight10mrp">Weight 10 MRP:</label>
+        <input type="number" id="weight10mrp" name="weight10mrp" placeholder="Enter weight 10MRP">
+    </div>
+    <div class="form-group">
+        <label for="weight5rpm">Weight 5 MRP:</label>
+        <input type="number" id="weight5rpm" name="weight5rpm" placeholder="Enter weight 5MRP">
+    </div>
+    <div class="form-group">
+        <label for="tubQuantity">Tub Quantity:</label>
+        <input type="number" id="tubQuantity" name="tubQuantity" placeholder="Enter Tub Quantity">
+    </div>
+    <div class="form-group">
+        <label for="bucketQuantity">Bucket Quantity:</label>
+        <input type="number" id="bucketQuantity" name="bucketQuantity" placeholder="Enter Bucket Quantity">
+    </div>
+    <div class="form-group">
+        <label for="daliyaQuantity">Daliya Quantity:</label>
+        <input type="number" id="daliyaQuantity" name="daliyaQuantity" placeholder="Enter Daliya Quantity">
+    </div>
+    <button onclick="createBackOfficeTransaction()">Create Transaction</button>
+</div>
+
+<script>
+    fetch('http://localhost:8080/api/v1/watchman')
+        .then(response => response.json())
+        .then(data => {
+            const vehicleNumberSelect = document.getElementById('vehicleNumber');
+            data.forEach(vehicle => {
+                const option = document.createElement('option');
+                option.value = vehicle.vehicleNumber;
+                option.textContent = vehicle.vehicleNumber;
+                vehicleNumberSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching vehicle numbers:', error));
+
+    function createBackOfficeTransaction() {
+        var vehicleNumber = document.getElementById("vehicleNumber").value;
+        var advanceFreight = document.getElementById("advanceFreight").value;
+        var transporterName = document.getElementById("transporterName").value;
+        var weight5kg = document.getElementById("weight5kg").value;
+        var weight3kg = document.getElementById("weight3kg").value;
+        var weight1kg = document.getElementById("weight1kg").value;
+        var weight500g = document.getElementById("weight500g").value;
+        var weight10mrp = document.getElementById("weight10mrp").value;
+        var weight5rpm = document.getElementById("weight5rpm").value;
+        var tubQuantity = document.getElementById("tubQuantity").value;
+        var bucketQuantity = document.getElementById("bucketQuantity").value;
+        var daliyaQuantity = document.getElementById("daliyaQuantity").value;
+
+        
+        var data = {
+            "watchman": {
+                "vehicleNumber": vehicleNumber
+            },
+            "advanceFreight": advanceFreight,
+            "transporterName": transporterName,
+            "weight5kg": weight5kg,
+            "weight3kg":weight3kg,
+            "weight1kg":weight1kg,
+            "weight500g":weight500g,
+            "weight10mrp":weight10mrp,
+            "weight5rpm":weight5rpm,
+            "tubQuantity":tubQuantity,
+            "bucketQuantity":bucketQuantity,
+            "daliyaQuantity":daliyaQuantity
+        };
+
+        fetch('http://localhost:8080/backoffice/transactions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('responseMessage').innerHTML = 'BackOffice transaction created successfully.';
+            } else {
+                document.getElementById('responseMessage').innerHTML = 'Failed to create BackOffice transaction.';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('responseMessage').innerHTML = 'An error occurred. Please try again.';
+        });
+    }
+
+    
+</script>
+</body>
+</html>
