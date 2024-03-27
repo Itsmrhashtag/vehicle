@@ -27,11 +27,17 @@ public class BackOffice {
     private int tubQuantity;
     private int bucketQuantity;
     private int daliyaQuantity;
-
+    private int totalQuantity;
     public BackOffice() {
     }
 
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
 
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
 
     public Watchman getWatchman() {
         return watchman;
@@ -39,6 +45,14 @@ public class BackOffice {
 
     public void setWatchman(Watchman watchman) {
         this.watchman = watchman;
+    }
+
+    public int getWeight5rpm() {
+        return weight5rpm;
+    }
+
+    public void setWeight5rpm(int weight5rpm) {
+        this.weight5rpm = weight5rpm;
     }
 
     public Long getId() {
