@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Transaction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Transaction</h2>
+        <div id="responseMessage"></div>
+        <div class="form-group">
+            <label for="vehicleNumber">Vehicle Number:</label>
+            <select id="vehicleNumber" name="vehicleNumber">
+                <option value="">Loading vehicle numbers...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="transactionType">Transaction Type:</label>
+            <select id="transactionType" name="transactionType">
+                <option value="">Select Transaction Type</option>
+                <option value="LOADING">Loading</option>
+                <option value="UNLOADING">Unloading</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="netWeight">Net Weight:</label>
+            <input type="number" id="netWeight" name="netWeight" placeholder="Enter net weight">
+        </div>
+        <div class="form-group">
+            <label for="tareWeight">Tare Weight:</label>
+            <input type="number" id="tareWeight" name="tareWeight" placeholder="Enter tare weight">
+        </div>
+        <button onclick="createTransaction()">Create Transaction</button>
+    </div>
+    <script>
+        fetch('http://localhost:8080/api/v1/watchman')
+            .then(response => response.json())
+            .then(data => {
+                const vehicleNumberSelect = document.getElementById('vehicleNumber');
+                vehicleNumberSelect.innerHTML = ''; // Clear loading message
+                data.forEach(vehicle => {
+                    const option = document.createElement('option');
+                    option.value = vehicle.vehicleNumber;
+                    option.textContent = vehicle.vehicleNumber;
+                    vehicleNumberSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching vehicle numbers:', error));
+
+        function createTransaction() {
+            var vehicleNumber = document.getElementById("vehicleNumber").value;
+            var transactionType = document.getElementById("transactionType").value;
+            var netWeight = document.getElementById("netWeight").value;
+            var tareWeight = document.getElementById("tareWeight").value;
+            // Checking if both fields are selected
+            if (!vehicleNumber || !transactionType) {
+                alert("Please select both Vehicle Number and Transaction Type");
+                return;
+            }
+
+            var data = {
+                "watchman": {
+                    "vehicleNumber": vehicleNumber
+                },
+                "netWeight": 14, // Example net weight
+                "tareWeight": 44, // Example tare weight
+                "transactionType": transactionType
+            };
+
+            fetch('http://localhost:8080/transactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('responseMessage').innerHTML = 'Transaction created successfully.';
+                } else {
+                    document.getElementById('responseMessage').innerHTML = 'Failed to create transaction.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('responseMessage').innerHTML = 'An error occurred. Please try again.';
+            });
+        }
+    </script>
+</body>
+</html>

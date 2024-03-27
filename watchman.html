@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Watchman</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Watchman</h2>
+        <div id="responseMessage"></div>
+        <div class="form-group">
+            <label for="vehicleNumber">Vehicle Number:</label>
+            <input type="text" id="vehicleNumber" name="vehicleNumber" placeholder="Enter vehicle number">
+        </div>
+        <button onclick="createWatchman()">Create Watchman</button>
+    </div>
+
+    <script>
+        function createWatchman() {
+            var vehicleNumber = document.getElementById("vehicleNumber").value;
+
+            var data = {
+                "vehicleNumber": vehicleNumber
+            };
+
+            fetch('http://localhost:8080/api/v1/watchman', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('responseMessage').innerHTML = 'Watchman created successfully.';
+                } else {
+                    document.getElementById('responseMessage').innerHTML = 'Failed to create watchman.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('responseMessage').innerHTML = 'An error occurred. Please try again.';
+            });
+        }
+    </script>
+</body>
+</html>
